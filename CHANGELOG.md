@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.0.0...v1.1.0) (2025-12-30)
+
+
+### Features
+
+* add file proxy support ([bafd4a6](https://github.com/sushidev-team/fairu-sdk/commit/bafd4a6af83998e73b1ebbe54537033de0a2d88d))
+
 ## 1.0.0 (2025-12-30)
 
 
