@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace SushiDev\Fairu\Enums;
+
+enum WorkflowType: string
+{
+    case COPYRIGHT_SPLITTING = 'COPYRIGHT_SPLITTING';
+    case COPYRIGHT_SPLITTING_SEARCH = 'COPYRIGHT_SPLITTING_SEARCH';
+    case COPYRIGHT_REPLACING = 'COPYRIGHT_REPLACING';
+    case COPYRIGHT_REPLACING_SEARCH = 'COPYRIGHT_REPLACING_SEARCH';
+}

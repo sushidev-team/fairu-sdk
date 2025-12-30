@@ -1,0 +1,36 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# PHPUnit
+.phpunit.cache/
+.phpunit.result.cache
+phpunit.xml
+
+# Coverage
+/coverage/
+.coverage
+clover.xml
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+
+# Build artifacts
+/build/
+*.cache
+
+# Temporary files
+*.swp
+*.swo
+*~
