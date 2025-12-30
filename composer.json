@@ -42,8 +42,8 @@
         }
     },
     "scripts": {
-        "test": "pest",
-        "test-coverage": "pest --coverage"
+        "test": "./vendor/bin/pest",
+        "test-coverage": "./vendor/bin/pest --coverage"
     },
     "config": {
         "sort-packages": true,
