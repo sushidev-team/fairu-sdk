@@ -4,8 +4,8 @@ A comprehensive Laravel SDK for the [Fairu](https://fairu.app) GraphQL API with 
 
 ## Requirements
 
-- PHP 8.1+
-- Laravel 10.0+ or 11.0+
+- PHP 8.2+
+- Laravel 10, 11, or 12
 
 ## Installation
 
@@ -56,6 +56,26 @@ return [
         ],
     ],
 ];
+```
+
+## Important: UUIDs
+
+All IDs in the Fairu API are UUIDs (Universally Unique Identifiers). This applies to all resources:
+
+- Assets
+- Folders
+- Galleries
+- Copyrights
+- Licenses
+- Users
+- Roles
+- Disks
+- Tenants
+
+Example:
+```php
+$assetId = '550e8400-e29b-41d4-a716-446655440000';
+$asset = Fairu::assets()->find($assetId);
 ```
 
 ## Basic Usage
@@ -462,6 +482,157 @@ $result = Fairu::uploads()->completeMultipart($fileId, $uploadId, $parts);
 // Or abort if needed
 Fairu::uploads()->abortMultipart($fileId, $uploadId);
 ```
+
+## File Proxy
+
+The File Proxy provides image transformation and optimized file delivery.
+
+### Configuration
+
+```env
+FAIRU_FILE_PROXY_URL=https://files.fairu.app
+```
+
+### Basic Usage
+
+```php
+use SushiDev\Fairu\Facades\Fairu;
+
+// Generate a URL for an asset
+$url = Fairu::fileProxy()->url('asset-uuid', 'image.jpg')->toUrl();
+
+// From an Asset object
+$asset = Fairu::assets()->find('asset-uuid');
+$url = Fairu::fileProxy()->fromAsset($asset)->toUrl();
+```
+
+### Image Transformations
+
+```php
+use SushiDev\Fairu\Facades\Fairu;
+use SushiDev\Fairu\Enums\FileProxyFit;
+use SushiDev\Fairu\Enums\FileProxyFormat;
+
+// Resize image
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'photo.jpg')
+    ->width(800)
+    ->height(600)
+    ->toUrl();
+
+// Set dimensions with aspect ratio
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'photo.jpg')
+    ->dimensions(1200, 800)
+    ->toUrl();
+
+// Change format and quality
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'photo.jpg')
+    ->format(FileProxyFormat::WEBP)
+    ->quality(85)
+    ->toUrl();
+
+// Shorthand format methods
+$url = Fairu::fileProxy()->url('asset-uuid', 'photo.jpg')->webp()->toUrl();
+$url = Fairu::fileProxy()->url('asset-uuid', 'photo.jpg')->jpg()->toUrl();
+$url = Fairu::fileProxy()->url('asset-uuid', 'photo.jpg')->png()->toUrl();
+
+// Fit modes
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'photo.jpg')
+    ->dimensions(400, 400)
+    ->cover()  // Scale and crop to fill (default)
+    ->toUrl();
+
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'photo.jpg')
+    ->dimensions(400, 400)
+    ->contain()  // Maintain aspect ratio within dimensions
+    ->toUrl();
+
+// Focal point for smart cropping
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'photo.jpg')
+    ->dimensions(400, 400)
+    ->focal(50, 30)  // x=50%, y=30%
+    ->toUrl();
+
+// With zoom level
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'photo.jpg')
+    ->focal(50, 50, 2.0)  // x, y, zoom
+    ->toUrl();
+```
+
+### Video Features
+
+```php
+use SushiDev\Fairu\Enums\VideoVersions;
+
+// Extract video frame at timestamp
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'video.mp4')
+    ->timestamp('00:00:05.000')
+    ->toUrl();
+
+// Video quality version
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'video.mp4')
+    ->videoVersion(VideoVersions::HIGH)
+    ->toUrl();
+
+// HLS streaming URL
+$hlsUrl = Fairu::fileProxy()->hlsUrl('tenant-uuid', 'asset-uuid');
+```
+
+### Other Options
+
+```php
+// Raw file download (no processing)
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'document.eps')
+    ->raw()
+    ->toUrl();
+
+// Process SVG to raster
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'logo.svg')
+    ->processSvg()
+    ->width(200)
+    ->toUrl();
+
+// Signed URLs for restricted content
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'file.jpg')
+    ->signature($hmacSignature, $signatureDate)
+    ->toUrl();
+```
+
+### Utility Methods
+
+```php
+// Check if file exists
+$exists = Fairu::fileProxy()->exists('asset-uuid');
+
+// Get image dimensions
+$meta = Fairu::fileProxy()->meta('asset-uuid');
+// Returns: ['width' => 1920, 'height' => 1080]
+
+// Health check
+$healthy = Fairu::fileProxy()->health();
+```
+
+### Available Parameters
+
+| Parameter | Range | Description |
+|-----------|-------|-------------|
+| `width` | 1-6000 | Output width in pixels |
+| `height` | 1-6000 | Output height in pixels |
+| `quality` | 1-100 | JPEG/WebP quality (default: 95) |
+| `format` | jpg, png, webp | Output format (default: webp) |
+| `fit` | cover, contain | Resize mode (default: cover) |
+| `focal` | x-y-zoom | Smart crop focal point |
 
 ## Testing
 

@@ -13,6 +13,7 @@ use SushiDev\Fairu\Events\QueryExecuted;
 use SushiDev\Fairu\Exceptions\AuthenticationException;
 use SushiDev\Fairu\Exceptions\FairuException;
 use SushiDev\Fairu\Exceptions\GraphQLException;
+use SushiDev\Fairu\FileProxy\FileProxy;
 use SushiDev\Fairu\Fragments\FragmentRegistry;
 use SushiDev\Fairu\Mutations\AssetMutations;
 use SushiDev\Fairu\Mutations\CopyrightMutations;
@@ -50,6 +51,8 @@ class FairuClient
 
     private array $mutationInstances = [];
 
+    private ?FileProxy $fileProxyInstance = null;
+
     public function __construct(
         private readonly string $baseUrl,
         private readonly ?string $token,
@@ -57,6 +60,7 @@ class FairuClient
         private readonly array $retryConfig = [],
         private readonly ?CacheManager $cacheManager = null,
         private readonly ?FragmentRegistry $fragmentRegistry = null,
+        private readonly ?string $fileProxyUrl = null,
     ) {
         $this->httpClient = new Client([
             'base_uri' => rtrim($this->baseUrl, '/').'/graphql',
@@ -302,6 +306,16 @@ class FairuClient
     public function fragments(): FragmentRegistry
     {
         return $this->fragmentRegistry ?? new FragmentRegistry();
+    }
+
+    public function fileProxy(): FileProxy
+    {
+        if ($this->fileProxyInstance === null) {
+            $url = $this->fileProxyUrl ?? 'https://files.fairu.app';
+            $this->fileProxyInstance = new FileProxy($url);
+        }
+
+        return $this->fileProxyInstance;
     }
 
     public function getBaseUrl(): string

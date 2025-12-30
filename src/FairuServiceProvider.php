@@ -33,6 +33,7 @@ class FairuServiceProvider extends ServiceProvider
                 retryConfig: $app['config']->get('fairu.retry', []),
                 cacheManager: $app->make(CacheManager::class),
                 fragmentRegistry: $app->make(FragmentRegistry::class),
+                fileProxyUrl: $app['config']->get('fairu.file_proxy_url'),
             );
         });
 

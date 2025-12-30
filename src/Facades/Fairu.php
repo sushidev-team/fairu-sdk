@@ -34,6 +34,7 @@ use SushiDev\Fairu\Queries\WorkflowQueries;
  * @method static TenantQueries tenant()
  * @method static \SushiDev\Fairu\Mutations\UploadMutations uploads()
  * @method static \SushiDev\Fairu\Fragments\FragmentRegistry fragments()
+ * @method static \SushiDev\Fairu\FileProxy\FileProxy fileProxy()
  * @method static array query(string $query, array $variables = [])
  * @method static array mutate(string $mutation, array $variables = [])
  *

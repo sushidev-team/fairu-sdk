@@ -14,6 +14,8 @@ use SushiDev\Fairu\Enums\VideoVersions;
 use SushiDev\Fairu\Enums\DmcaStatus;
 use SushiDev\Fairu\Enums\UploadShareLinkExpiration;
 use SushiDev\Fairu\Enums\PdfSignatureRequestStatus;
+use SushiDev\Fairu\Enums\FileProxyFit;
+use SushiDev\Fairu\Enums\FileProxyFormat;
 
 describe('UploadType', function () {
     it('has correct values', function () {
@@ -120,5 +122,30 @@ describe('PdfSignatureRequestStatus', function () {
     it('has signature statuses', function () {
         expect(PdfSignatureRequestStatus::CREATED->value)->toBe('CREATED');
         expect(PdfSignatureRequestStatus::DONE->value)->toBe('DONE');
+    });
+});
+
+describe('FileProxyFit', function () {
+    it('has fit modes', function () {
+        expect(FileProxyFit::COVER->value)->toBe('cover');
+        expect(FileProxyFit::CONTAIN->value)->toBe('contain');
+    });
+
+    it('can be created from string', function () {
+        expect(FileProxyFit::from('cover'))->toBe(FileProxyFit::COVER);
+        expect(FileProxyFit::from('contain'))->toBe(FileProxyFit::CONTAIN);
+    });
+});
+
+describe('FileProxyFormat', function () {
+    it('has image formats', function () {
+        expect(FileProxyFormat::JPG->value)->toBe('jpg');
+        expect(FileProxyFormat::JPEG->value)->toBe('jpeg');
+        expect(FileProxyFormat::PNG->value)->toBe('png');
+        expect(FileProxyFormat::WEBP->value)->toBe('webp');
+    });
+
+    it('can be created from string', function () {
+        expect(FileProxyFormat::from('webp'))->toBe(FileProxyFormat::WEBP);
     });
 });
