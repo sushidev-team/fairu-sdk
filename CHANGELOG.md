@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.1](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.0...v1.1.1) (2026-01-08)
+
+
+### Bug Fixes
+
+* add support for laravel 9 ([17301e8](https://github.com/sushidev-team/fairu-sdk/commit/17301e89e4316595871d810650b6d5f87aa12809))
+* issue gha ([0597641](https://github.com/sushidev-team/fairu-sdk/commit/0597641377dcf8412cd13c0070ee962c479f7d8f))
+* issue with laravel 9 pipeline ([b948f43](https://github.com/sushidev-team/fairu-sdk/commit/b948f4332bb64ea0c13036dfbdd6770caa9868f3))
+* remove laravel 9 support ([e477bfe](https://github.com/sushidev-team/fairu-sdk/commit/e477bfed9e650b20dff93469ee1ae6c56c3e0abd))
+
 ## [1.1.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.0.0...v1.1.0) (2025-12-30)
 
 
