@@ -54,9 +54,10 @@ jobs:
           COMPOSER_ALLOW_SUPERUSER: 1
         run: |
           composer config allow-plugins.pestphp/pest-plugin true
-          # Remove pest-plugin-laravel for Laravel 9 (not supported)
+          # Laravel 9 adjustments: remove pest-plugin-laravel (not supported) and disable security audit (EOL)
           if [[ "${{ matrix.laravel }}" == "9.*" ]]; then
             composer remove pestphp/pest-plugin-laravel --dev --no-interaction --no-update
+            composer config audit.block-insecure false
           fi
           composer require "illuminate/support:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/cache:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --prefer-dist --no-interaction --no-progress
