@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.2...v1.1.3) (2026-01-21)
+
+
+### Bug Fixes
+
+* remove updated_at / created_at with different type ([6e36272](https://github.com/sushidev-team/fairu-sdk/commit/6e36272b7bce4faf72d1111f4fa9d1d028abd8a0))
+
 ## [1.1.2](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.1...v1.1.2) (2026-01-21)
 
 
