@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.1...v1.1.2) (2026-01-21)
+
+
+### Bug Fixes
+
+* inconsistencies to the fairu API ([1c7643a](https://github.com/sushidev-team/fairu-sdk/commit/1c7643a5a6a2fe1c1f3f5ae8dc3883c4dbf9fda0))
+
 ## [1.1.1](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.0...v1.1.1) (2026-01-21)
 
 
