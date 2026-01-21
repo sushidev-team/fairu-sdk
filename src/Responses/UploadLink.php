@@ -13,6 +13,6 @@ class UploadLink extends BaseResponse
 
     public function getUrl(): ?string
     {
-        return $this->data['url'] ?? null;
+        return $this->data['upload_url'] ?? null;
     }
 }

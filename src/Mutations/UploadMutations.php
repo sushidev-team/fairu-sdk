@@ -53,7 +53,7 @@ class UploadMutations
                 copyright: $copyright
             ) {
                 id
-                url
+                upload_url
             }
         }
         GRAPHQL;
@@ -155,7 +155,7 @@ class UploadMutations
         mutation CompleteFairuMultipartUpload($fileId: ID!, $uploadId: String!, $parts: [FairuMultipartPartInput!]!) {
             completeFairuMultipartUpload(fileId: $fileId, uploadId: $uploadId, parts: $parts) {
                 id
-                url
+                upload_url
             }
         }
         GRAPHQL;
