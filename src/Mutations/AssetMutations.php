@@ -145,7 +145,7 @@ class AssetMutations extends BaseMutation
         mutation ReplaceFairuFile($id: ID!) {
             replaceFairuFile(id: $id) {
                 id
-                url
+                upload_url
             }
         }
         GRAPHQL;

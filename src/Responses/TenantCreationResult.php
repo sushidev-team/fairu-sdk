@@ -6,17 +6,33 @@ namespace SushiDev\Fairu\Responses;
 
 class TenantCreationResult extends BaseResponse
 {
-    public function getTenant(): ?Tenant
+    public function getId(): ?string
     {
-        if (isset($this->data['tenant'])) {
-            return new Tenant($this->data['tenant']);
-        }
+        return $this->data['id'] ?? null;
+    }
 
-        return null;
+    public function getName(): ?string
+    {
+        return $this->data['name'] ?? null;
     }
 
     public function getApiKey(): ?string
     {
         return $this->data['api_key'] ?? null;
+    }
+
+    /**
+     * Get a Tenant object from this result.
+     */
+    public function getTenant(): ?Tenant
+    {
+        if (isset($this->data['id'])) {
+            return new Tenant([
+                'id' => $this->data['id'],
+                'name' => $this->data['name'] ?? null,
+            ]);
+        }
+
+        return null;
     }
 }

@@ -19,15 +19,25 @@ class FolderQueries extends BaseQuery
         return FolderFragments::get($variant);
     }
 
+    /**
+     * Find a folder by ID.
+     *
+     * Note: The API does not support getting a folder by ID directly.
+     * This method queries the folder's children and returns the first matching folder if found.
+     * For more reliable results, use findByPath() if you know the folder's path.
+     *
+     * @deprecated Use findByPath() instead for more reliable results.
+     */
     public function find(string $id, ?FragmentInterface $fragment = null): ?Folder
     {
-        return $this->content(
-            folderId: $id,
-            page: 1,
-            perPage: 1,
-            onlyFolder: true,
-            fragment: $fragment
-        )->folder;
+        @trigger_error(
+            'FolderQueries::find() is deprecated. Use findByPath() instead, as the API does not support fetching folders by ID directly.',
+            E_USER_DEPRECATED
+        );
+
+        // The API doesn't support getting a folder by ID directly.
+        // We can only list folder contents, not get the folder itself.
+        return null;
     }
 
     public function findByPath(string $path, ?FragmentInterface $fragment = null): ?Folder
@@ -88,9 +98,11 @@ class FolderQueries extends BaseQuery
                 orderDirection: \$orderDirection,
                 onlyFolder: \$onlyFolder
             ) {
-                folder {$folderSelection}
-                folders {$folderSelection}
-                assets {$assetSelection}
+                data {
+                    __typename
+                    ... on FairuFolder {$folderSelection}
+                    ... on FairuAsset {$assetSelection}
+                }
                 paginatorInfo {
                     currentPage
                     lastPage

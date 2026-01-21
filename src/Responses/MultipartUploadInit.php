@@ -13,6 +13,6 @@ class MultipartUploadInit extends BaseResponse
 
     public function getUploadId(): ?string
     {
-        return $this->data['upload_id'] ?? null;
+        return $this->data['uploadId'] ?? null;
     }
 }

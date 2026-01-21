@@ -14,10 +14,8 @@ class TenantMutations extends BaseMutation
         $mutation = <<<'GRAPHQL'
         mutation CreateFairuTenant($name: String!) {
             createFairuTenant(name: $name) {
-                tenant {
-                    id
-                    name
-                }
+                id
+                name
                 api_key
             }
         }

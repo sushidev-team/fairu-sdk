@@ -16,17 +16,23 @@ class FolderContent
 
     public function __construct(array $data)
     {
-        $this->folder = isset($data['folder']) ? new Folder($data['folder']) : null;
+        // Note: The API does not return the parent folder in FairuFolderList
+        $this->folder = null;
 
-        $this->folders = array_map(
-            fn ($f) => new Folder($f),
-            $data['folders'] ?? []
-        );
+        // Parse the unified data array and separate by __typename
+        $folders = [];
+        $assets = [];
 
-        $this->assets = array_map(
-            fn ($a) => new Asset($a),
-            $data['assets'] ?? []
-        );
+        foreach ($data['data'] ?? [] as $entry) {
+            if (($entry['__typename'] ?? '') === 'FairuFolder') {
+                $folders[] = new Folder($entry);
+            } else {
+                $assets[] = new Asset($entry);
+            }
+        }
+
+        $this->folders = $folders;
+        $this->assets = $assets;
 
         $this->paginatorInfo = isset($data['paginatorInfo'])
             ? new PaginatorInfo($data['paginatorInfo'])

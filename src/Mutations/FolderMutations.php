@@ -132,8 +132,11 @@ class FolderMutations extends BaseMutation
         $mutation = <<<'GRAPHQL'
         mutation CreateFairuFolderUploadShareLink($id: ID!, $expires_in: FairuUploadShareLinkExpiration, $name: String) {
             createFairuFolderUploadShareLink(id: $id, expires_in: $expires_in, name: $name) {
+                id
                 url
                 expires_at
+                name
+                folder_id
             }
         }
         GRAPHQL;
