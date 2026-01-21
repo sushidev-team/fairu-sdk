@@ -73,9 +73,11 @@ class FolderQueries extends BaseQuery
         ?FragmentInterface $assetFragment = null
     ): FolderContent {
         $folderSelection = $this->getFragment($fragment);
+        // Note: created_at is omitted from default asset selection to avoid type conflicts
+        // with FairuFolder.created_at (DateTime vs String) until the API is updated.
         $assetSelection = $assetFragment
             ? $assetFragment->toGraphQL()
-            : '{ id name mime url width height blurhash alt blocked has_error created_at }';
+            : '{ id name mime url width height blurhash alt blocked has_error }';
 
         $query = <<<GRAPHQL
         query FairuFolder(

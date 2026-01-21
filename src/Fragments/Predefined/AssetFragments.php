@@ -25,6 +25,12 @@ class AssetFragments
             ->select(['id', 'name']);
     }
 
+    /**
+     * Default asset fragment.
+     *
+     * Note: created_at/updated_at omitted to avoid type conflicts in union queries
+     * until the API is updated to use DateTime instead of String.
+     */
     public static function default(): FragmentBuilder
     {
         return FragmentBuilder::for('FairuAsset')
@@ -43,8 +49,6 @@ class AssetFragments
                 'focal_point',
                 'blocked',
                 'has_error',
-                'created_at',
-                'updated_at',
             ]);
     }
 
