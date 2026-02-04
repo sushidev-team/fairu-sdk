@@ -7,6 +7,7 @@ namespace SushiDev\Fairu\Queries;
 use SushiDev\Fairu\Contracts\FragmentInterface;
 use SushiDev\Fairu\Enums\SortingDirection;
 use SushiDev\Fairu\Fragments\Predefined\AssetFragments;
+use SushiDev\Fairu\Responses\AllFilesFlatResult;
 use SushiDev\Fairu\Responses\Asset;
 use SushiDev\Fairu\Responses\PaginatedList;
 
@@ -166,5 +167,35 @@ class AssetQueries extends BaseQuery
         $result = $this->executeQuery($query, ['ids' => $ids]);
 
         return $result['fairuFilesTotalSize'] ?? 0;
+    }
+
+    public function allFlat(?string $afterCursor = null, ?int $limit = null): AllFilesFlatResult
+    {
+        $query = <<<'GRAPHQL'
+        query FairuAllFilesFlat($afterCursor: String, $limit: Int) {
+            fairuAllFilesFlat(afterCursor: $afterCursor, limit: $limit) {
+                entries {
+                    id
+                    name
+                    path
+                    size
+                    mime
+                    isFolder
+                    updatedAt
+                }
+                nextCursor
+                hasMore
+            }
+        }
+        GRAPHQL;
+
+        $variables = array_filter([
+            'afterCursor' => $afterCursor,
+            'limit' => $limit,
+        ], fn ($v) => $v !== null);
+
+        $result = $this->executeQuery($query, $variables);
+
+        return new AllFilesFlatResult($result['fairuAllFilesFlat'] ?? []);
     }
 }
