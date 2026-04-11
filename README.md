@@ -109,6 +109,15 @@ $content->assets;  // Array of Asset objects
 // Get tenant info
 $tenant = Fairu::tenant()->get();
 
+// List sub-tenants of the current tenant
+$subTenants = Fairu::tenant()->subTenants();
+foreach ($subTenants as $subTenant) {
+    $subTenant->getId();
+    $subTenant->getName();
+    $subTenant->getParentId();
+    $subTenant->isSubTenant(); // true
+}
+
 // List galleries
 $galleries = Fairu::galleries()->all(['tenant-uuid'], from: '2024-01-01');
 
@@ -169,6 +178,16 @@ $gallery = Fairu::galleryMutations()->create(
         ->date(now())
         ->location('Berlin')
 );
+
+// Create a sub-tenant of the current tenant.
+// The returned API key is only shown once - store it securely.
+$result = Fairu::tenantMutations()->createSubTenant('Client Workspace');
+$subTenantId = $result->getId();
+$apiKey = $result->getApiKey();
+$createdAt = $result->getCreatedAt();
+
+// Detach a sub-tenant, making it a fully independent tenant
+$detached = Fairu::tenantMutations()->detachSubTenant($subTenantId);
 ```
 
 ## Fragments
