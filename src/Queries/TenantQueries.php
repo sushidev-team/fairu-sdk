@@ -36,4 +36,28 @@ class TenantQueries extends BaseQuery
 
         return new Tenant($result['fairuTenant']);
     }
+
+    /**
+     * Get all sub-tenants of the current tenant.
+     *
+     * @return array<int, Tenant>
+     */
+    public function subTenants(?FragmentInterface $fragment = null): array
+    {
+        $selection = $this->getFragment($fragment);
+
+        $query = <<<GRAPHQL
+        query {
+            fairuSubTenants {$selection}
+        }
+        GRAPHQL;
+
+        $cacheKey = $this->cacheManager?->generateKey('sub_tenants', []);
+        $result = $this->executeQuery($query, [], $cacheKey);
+
+        return array_map(
+            fn (array $data): Tenant => new Tenant($data),
+            $result['fairuSubTenants'] ?? []
+        );
+    }
 }
