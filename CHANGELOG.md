@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.3...v1.2.0) (2026-04-11)
+
+
+### Features
+
+* added sub-tenants logic ([ff3daf2](https://github.com/sushidev-team/fairu-sdk/commit/ff3daf2693f2b3f1d68d963d8d3056401d3116ba))
+* added sub-tenants logic ([396ca15](https://github.com/sushidev-team/fairu-sdk/commit/396ca158a8896e93a3ec67bdf171afc8b9ea16e0))
+
+
+### Bug Fixes
+
+* add missing queries ([6eec595](https://github.com/sushidev-team/fairu-sdk/commit/6eec595b3f0823d929aa456e8be7ba4ebede7914))
+* added test case, updated README ([6d94854](https://github.com/sushidev-team/fairu-sdk/commit/6d948540b86af27015eb4e4ad73cbbc1cedde1ff))
+* improve test ([cf75550](https://github.com/sushidev-team/fairu-sdk/commit/cf75550d26c2baa30f4bee4cf8ea90b76d935a43))
+
 ## [1.1.3](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.2...v1.1.3) (2026-01-21)
 
 
