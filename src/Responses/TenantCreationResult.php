@@ -21,6 +21,11 @@ class TenantCreationResult extends BaseResponse
         return $this->data['api_key'] ?? null;
     }
 
+    public function getCreatedAt(): ?string
+    {
+        return $this->data['created_at'] ?? null;
+    }
+
     /**
      * Get a Tenant object from this result.
      */

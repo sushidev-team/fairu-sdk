@@ -118,4 +118,54 @@ class TenantMutations extends BaseMutation
 
         return new Tenant($result['updateFairuTenant']);
     }
+
+    /**
+     * Create a new sub-tenant of the current tenant.
+     *
+     * The current tenant must not itself be a sub-tenant. Returns a
+     * TenantCreationResult carrying the generated API key for the new
+     * sub-tenant — the key is only returned on creation.
+     */
+    public function createSubTenant(string $name): TenantCreationResult
+    {
+        $mutation = <<<'GRAPHQL'
+        mutation CreateFairuSubTenant($name: String!) {
+            createFairuSubTenant(name: $name) {
+                id
+                name
+                api_key
+                created_at
+            }
+        }
+        GRAPHQL;
+
+        $result = $this->executeMutation($mutation, ['name' => $name]);
+
+        return new TenantCreationResult($result['createFairuSubTenant'] ?? []);
+    }
+
+    /**
+     * Detach a sub-tenant, making it a fully independent tenant.
+     */
+    public function detachSubTenant(string $id): ?Tenant
+    {
+        $mutation = <<<'GRAPHQL'
+        mutation DetachFairuSubTenant($id: ID!) {
+            detachFairuSubTenant(id: $id) {
+                id
+                name
+                parent_id
+                is_sub_tenant
+            }
+        }
+        GRAPHQL;
+
+        $result = $this->executeMutation($mutation, ['id' => $id]);
+
+        if (! isset($result['detachFairuSubTenant'])) {
+            return null;
+        }
+
+        return new Tenant($result['detachFairuSubTenant']);
+    }
 }

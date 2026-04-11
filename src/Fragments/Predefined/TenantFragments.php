@@ -22,7 +22,7 @@ class TenantFragments
     {
         return FragmentBuilder::for('FairuTenant')
             ->name('TenantMinimal')
-            ->select(['id', 'name']);
+            ->select(['id', 'name', 'parent_id', 'is_sub_tenant']);
     }
 
     public static function default(): FragmentBuilder
@@ -45,6 +45,8 @@ class TenantFragments
                 'custom_domain',
                 'custom_domain_verified',
                 'custom_domain_status',
+                'parent_id',
+                'is_sub_tenant',
             ]);
     }
 
@@ -74,11 +76,20 @@ class TenantFragments
                 'trial_ends_at',
                 'created_at',
                 'updated_at',
+                'parent_id',
+                'is_sub_tenant',
             ])
             ->with('avatar', fn (FragmentBuilder $f) => $f->select([
                 'id',
                 'name',
                 'url',
+            ]))
+            ->with('sub_tenants', fn (FragmentBuilder $f) => $f->select([
+                'id',
+                'name',
+                'parent_id',
+                'is_sub_tenant',
+                'created_at',
             ]));
     }
 }

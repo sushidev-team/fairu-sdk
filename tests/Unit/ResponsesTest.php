@@ -8,6 +8,7 @@ use SushiDev\Fairu\Responses\License;
 use SushiDev\Fairu\Responses\User;
 use SushiDev\Fairu\Responses\Role;
 use SushiDev\Fairu\Responses\Tenant;
+use SushiDev\Fairu\Responses\TenantCreationResult;
 use SushiDev\Fairu\Responses\PaginatedList;
 use SushiDev\Fairu\Responses\PaginatorInfo;
 use SushiDev\Fairu\Enums\LicenseType;
@@ -262,5 +263,66 @@ describe('PaginatorInfo', function () {
         expect($info->isFirstPage())->toBeTrue();
         expect($info->isLastPage())->toBeFalse();
         expect($info->getTotal())->toBe(100);
+    });
+});
+
+describe('Tenant sub-tenants', function () {
+    it('exposes parent_id and is_sub_tenant', function () {
+        $tenant = new Tenant([
+            'id' => 'tenant-child',
+            'name' => 'Child',
+            'parent_id' => 'tenant-parent',
+            'is_sub_tenant' => true,
+        ]);
+
+        expect($tenant->getParentId())->toBe('tenant-parent');
+        expect($tenant->isSubTenant())->toBeTrue();
+    });
+
+    it('reports root tenant as non sub-tenant', function () {
+        $tenant = new Tenant(['id' => 'root', 'name' => 'Root']);
+
+        expect($tenant->getParentId())->toBeNull();
+        expect($tenant->isSubTenant())->toBeFalse();
+    });
+
+    it('hydrates nested sub-tenants as Tenant instances', function () {
+        $tenant = new Tenant([
+            'id' => 'root',
+            'name' => 'Root',
+            'sub_tenants' => [
+                ['id' => 'child-1', 'name' => 'Child 1', 'parent_id' => 'root'],
+                ['id' => 'child-2', 'name' => 'Child 2', 'parent_id' => 'root'],
+            ],
+        ]);
+
+        $children = $tenant->getSubTenants();
+
+        expect($children)->toHaveCount(2);
+        expect($children[0])->toBeInstanceOf(Tenant::class);
+        expect($children[0]->getId())->toBe('child-1');
+        expect($children[1]->isSubTenant())->toBeTrue();
+    });
+
+    it('returns empty array when sub_tenants missing', function () {
+        $tenant = new Tenant(['id' => 'root']);
+
+        expect($tenant->getSubTenants())->toBe([]);
+    });
+});
+
+describe('TenantCreationResult', function () {
+    it('exposes id, name, api_key and created_at', function () {
+        $result = new TenantCreationResult([
+            'id' => 'new-tenant',
+            'name' => 'New',
+            'api_key' => 'secret-key',
+            'created_at' => '2026-04-11T10:00:00+00:00',
+        ]);
+
+        expect($result->getId())->toBe('new-tenant');
+        expect($result->getName())->toBe('New');
+        expect($result->getApiKey())->toBe('secret-key');
+        expect($result->getCreatedAt())->toBe('2026-04-11T10:00:00+00:00');
     });
 });

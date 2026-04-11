@@ -28,6 +28,9 @@ use SushiDev\Fairu\Enums\WebhookType;
  * @property-read string|null $trial_ends_at
  * @property-read string|null $created_at
  * @property-read string|null $updated_at
+ * @property-read string|null $parent_id
+ * @property-read bool|null $is_sub_tenant
+ * @property-read array<int, array<string, mixed>>|null $sub_tenants
  */
 class Tenant extends BaseResponse
 {
@@ -82,5 +85,29 @@ class Tenant extends BaseResponse
         }
 
         return null;
+    }
+
+    public function getParentId(): ?string
+    {
+        return $this->data['parent_id'] ?? null;
+    }
+
+    public function isSubTenant(): bool
+    {
+        return (bool) ($this->data['is_sub_tenant'] ?? ($this->data['parent_id'] ?? null) !== null);
+    }
+
+    /**
+     * @return array<int, self>
+     */
+    public function getSubTenants(): array
+    {
+        $subTenants = $this->data['sub_tenants'] ?? null;
+
+        if (! is_array($subTenants)) {
+            return [];
+        }
+
+        return array_map(fn (array $data): self => new self($data), $subTenants);
     }
 }
