@@ -172,7 +172,7 @@ describe('TenantQueries::subTenants', function () {
         expect(Fairu::tenant()->subTenants())->toBe([]);
     });
 
-    it('accepts a custom fragment', function () {
+    it('injects a custom fragment into the outgoing query', function () {
         $history = [];
         bindMockHttpClient([
             ['data' => ['fairuSubTenants' => []]],
@@ -183,6 +183,18 @@ describe('TenantQueries::subTenants', function () {
         Fairu::tenant()->subTenants($fragment);
 
         $body = json_decode((string) $history[0]['request']->getBody(), true);
-        expect($body['query'])->toContain('fairuSubTenants');
+        $query = $body['query'];
+
+        // Fields present in both minimal and default - must appear.
+        expect($query)->toContain('fairuSubTenants');
+        expect($query)->toContain('parent_id');
+        expect($query)->toContain('is_sub_tenant');
+
+        // Fields only present in the default / full fragments - must NOT appear
+        // when the minimal fragment is injected, otherwise the custom fragment
+        // was silently ignored.
+        expect($query)->not->toContain('use_ai');
+        expect($query)->not->toContain('ai_language');
+        expect($query)->not->toContain('custom_domain');
     });
 });
