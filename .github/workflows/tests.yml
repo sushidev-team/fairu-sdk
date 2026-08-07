@@ -11,13 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        php: [8.2, 8.3, 8.4]
-        laravel: [10.*, 11.*, 12.*]
+        php: [8.2, 8.3, 8.4, 8.5]
+        # Laravel 10 and 11 are gone from this matrix, not because support was
+        # dropped — composer.json still allows ^10.0|^11.0 — but because
+        # Composer can no longer install them. Both lines are EOL and every
+        # published release is flagged by unpatched security advisories, so
+        # `composer update` aborts with "Your requirements could not be
+        # resolved" before a single test runs. Keeping the legs would mean a
+        # permanently red matrix that verifies nothing. Whether to also narrow
+        # the composer.json constraints is a separate call.
+        laravel: [12.*, 13.*]
         exclude:
-          - php: 8.4
-            laravel: 10.*
+          # Laravel 13 requires PHP >= 8.3
+          - php: 8.2
+            laravel: 13.*
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
