@@ -4,16 +4,87 @@ declare(strict_types=1);
 
 namespace SushiDev\Fairu\Mutations;
 
+use SushiDev\Fairu\Contracts\FragmentInterface;
+use SushiDev\Fairu\Enums\DuplicateStrategy;
 use SushiDev\Fairu\Enums\UploadType;
+use SushiDev\Fairu\Exceptions\DuplicateAssetException;
 use SushiDev\Fairu\FairuClient;
 use SushiDev\Fairu\Responses\MultipartUploadInit;
 use SushiDev\Fairu\Responses\UploadLink;
+use SushiDev\Fairu\Responses\UploadResult;
+use SushiDev\Fairu\Support\FingerprintHasher;
 
 class UploadMutations
 {
     public function __construct(
         protected readonly FairuClient $client,
     ) {}
+
+    /**
+     * Deduplication check to run before uploading a local file.
+     *
+     * Hashes the file locally (SHA1 of its bytes, matching the server) and asks
+     * the API whether an identical asset already exists in the tenant, so an
+     * upload of duplicate bytes can be avoided entirely. The behaviour on a hit
+     * is controlled by $onDuplicate:
+     *
+     *   SKIP  - return the existing asset, shouldUpload = false (default)
+     *   CHECK - flag the duplicate but still upload (shouldUpload = true)
+     *   FAIL  - throw a DuplicateAssetException
+     *   ALLOW - never hash or query; always upload as new
+     *
+     * Typical usage:
+     *
+     *   $result = Fairu::uploads()->checkDuplicate($path, DuplicateStrategy::SKIP);
+     *   if (! $result->shouldUpload) {
+     *       return $result->asset; // existing asset, nothing transferred
+     *   }
+     *   // ...proceed with initMultipart()/part PUTs/completeMultipart()...
+     *
+     * @throws DuplicateAssetException when $onDuplicate is FAIL and a duplicate exists
+     */
+    public function checkDuplicate(
+        string $filePath,
+        DuplicateStrategy $onDuplicate = DuplicateStrategy::SKIP,
+        ?FragmentInterface $fragment = null,
+    ): UploadResult {
+        if ($onDuplicate === DuplicateStrategy::ALLOW) {
+            return new UploadResult(isDuplicate: false, shouldUpload: true);
+        }
+
+        $hasher = new FingerprintHasher;
+        $fingerprint = $hasher->hashFile($filePath);
+
+        if ($hasher->isEmptyFile($fingerprint)) {
+            return new UploadResult(isDuplicate: false, shouldUpload: true, fingerprint: $fingerprint);
+        }
+
+        // Always query fresh: a just-uploaded duplicate must be visible, and a
+        // cached "miss" would defeat the check.
+        $existing = $this->client->assets()->fresh()->findByFingerprint($fingerprint, $fragment);
+
+        if ($existing === null) {
+            return new UploadResult(isDuplicate: false, shouldUpload: true, fingerprint: $fingerprint);
+        }
+
+        return match ($onDuplicate) {
+            DuplicateStrategy::FAIL => throw new DuplicateAssetException($existing, $fingerprint),
+            DuplicateStrategy::CHECK => new UploadResult(
+                isDuplicate: true,
+                shouldUpload: true,
+                asset: $existing,
+                existingAssetId: $existing->getId(),
+                fingerprint: $fingerprint,
+            ),
+            default => new UploadResult(
+                isDuplicate: true,
+                shouldUpload: false,
+                asset: $existing,
+                existingAssetId: $existing->getId(),
+                fingerprint: $fingerprint,
+            ),
+        };
+    }
 
     public function createLink(
         string $filename,

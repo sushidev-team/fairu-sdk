@@ -23,6 +23,7 @@ namespace SushiDev\Fairu\Responses;
  * @property-read bool|null $has_error
  * @property-read int|null $size
  * @property-read array|null $versions
+ * @property-read string|null $fingerprint
  * @property-read string|null $created_at
  * @property-read string|null $updated_at
  */
@@ -41,6 +42,11 @@ class Asset extends BaseResponse
     public function getMime(): ?string
     {
         return $this->data['mime'] ?? null;
+    }
+
+    public function getFingerprint(): ?string
+    {
+        return $this->data['fingerprint'] ?? null;
     }
 
     public function getUrl(): ?string
