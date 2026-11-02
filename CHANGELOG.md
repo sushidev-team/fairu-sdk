@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+* **file-proxy:** `FileProxyBuilder::withoutWatermark(string $displayKey)` signs URLs with `wm=0&wms=…` to skip the tenant's visible watermark
+
 ## [1.2.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.3...v1.2.0) (2026-04-11)
 
 

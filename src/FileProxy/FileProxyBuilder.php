@@ -12,6 +12,7 @@ class FileProxyBuilder
     protected string $id;
     protected string $filename;
     protected array $params = [];
+    protected ?string $watermarkKey = null;
 
     public function __construct(string $baseUrl, string $id, string $filename = 'file')
     {
@@ -200,6 +201,26 @@ class FileProxyBuilder
     }
 
     /**
+     * Skip the tenant's visible watermark for this rendition.
+     *
+     * Appends wm=0 and a signature (wms) computed over the final query when the
+     * URL is built, so call order does not matter. Changing any parameter of the
+     * built URL invalidates the signature and the proxy renders the watermark.
+     *
+     * @param  string  $displayKey  the tenant's watermark key ("fwm_...")
+     *
+     * @throws \InvalidArgumentException when the key is malformed
+     */
+    public function withoutWatermark(string $displayKey): self
+    {
+        WatermarkSignature::rawKey($displayKey);
+
+        $this->watermarkKey = $displayKey;
+
+        return $this;
+    }
+
+    /**
      * Add a custom parameter.
      */
     public function param(string $key, mixed $value): self
@@ -224,11 +245,28 @@ class FileProxyBuilder
     {
         $url = "{$this->baseUrl}/{$this->id}/{$this->filename}";
 
-        if (! empty($this->params)) {
-            $url .= '?'.http_build_query($this->params);
+        $params = $this->params;
+
+        if ($this->watermarkKey !== null) {
+            unset($params['wm'], $params['wms']);
+            $params['wm'] = '0';
         }
 
-        return $url;
+        if (empty($params)) {
+            return $url;
+        }
+
+        $query = http_build_query($params);
+
+        if ($this->watermarkKey !== null) {
+            $query .= '&wms='.WatermarkSignature::sign(
+                $this->watermarkKey,
+                $this->id,
+                WatermarkSignature::parseQuery($query),
+            );
+        }
+
+        return $url.'?'.$query;
     }
 
     /**
