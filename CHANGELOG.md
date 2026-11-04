@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.3.0...v1.4.0) (2026-11-04)
+
+
+### Features
+
+* **file-proxy:** add withoutWatermark() signed placements ([e2da6ce](https://github.com/sushidev-team/fairu-sdk/commit/e2da6cef02db8672e3362af1801ad8e5c615d224))
+* **watermark:** add signed placements and visible watermark mutations ([f6e3ecf](https://github.com/sushidev-team/fairu-sdk/commit/f6e3ecf81da8a79ef5c5deeac275212812ccedf3))
+* **watermark:** set the visible watermark through GraphQL ([04c03fe](https://github.com/sushidev-team/fairu-sdk/commit/04c03fee0d0618cc2721112df7d857c773491681))
+
+
+### Bug Fixes
+
+* **file-proxy:** always separate proxy URL params with & ([7840194](https://github.com/sushidev-team/fairu-sdk/commit/7840194614408b0bda0663e650d7e6b8da6cdf04))
+* **file-proxy:** pin separator only for signed URLs, sign lower-case IDs ([61430b0](https://github.com/sushidev-team/fairu-sdk/commit/61430b07a15e4e55b52f421110c9d02e6c690ddd))
+
 ## [1.3.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.2.0...v1.3.0) (2026-08-07)
 
 
