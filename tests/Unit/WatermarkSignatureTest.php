@@ -123,6 +123,33 @@ describe('FileProxyBuilder::withoutWatermark', function () {
         expect($url)->toBe("https://files.fairu.app/{$vectors['file_id']}/image.jpg?width=1600&wm=0&wms=O70ZFBx6ylPOX70Y6Wwjk5");
     });
 
+    it('keeps the configured separator for unsigned URLs', function () {
+        $previous = ini_set('arg_separator.output', ';');
+
+        try {
+            $url = FileProxyBuilder::make('https://files.fairu.app', 'abc-123', 'image.jpg')
+                ->width(800)
+                ->height(600)
+                ->toUrl();
+        } finally {
+            ini_set('arg_separator.output', $previous);
+        }
+
+        expect($url)->toBe('https://files.fairu.app/abc-123/image.jpg?width=800;height=600');
+    });
+
+    it('signs an upper-case file id like its canonical UUID', function () {
+        $vectors = watermarkVectors();
+        $id = strtoupper($vectors['file_id']);
+
+        $url = FileProxyBuilder::make('https://files.fairu.app', $id, 'image.jpg')
+            ->width(1600)
+            ->withoutWatermark(watermarkVectorKey(1))
+            ->toUrl();
+
+        expect($url)->toBe("https://files.fairu.app/{$id}/image.jpg?width=1600&wm=0&wms=O70ZFBx6ylPOX70Y6Wwjk5");
+    });
+
     it('does not sign without withoutWatermark', function () {
         $url = FileProxyBuilder::make('https://files.fairu.app', 'abc-123', 'image.jpg')->width(800)->toUrl();
 

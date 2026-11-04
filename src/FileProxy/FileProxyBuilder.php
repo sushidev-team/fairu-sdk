@@ -256,17 +256,19 @@ class FileProxyBuilder
             return $url;
         }
 
-        $query = http_build_query($params, '', '&');
-
-        if ($this->watermarkKey !== null) {
-            $query .= '&wms='.WatermarkSignature::sign(
-                $this->watermarkKey,
-                $this->id,
-                WatermarkSignature::parseQuery($query),
-            );
+        if ($this->watermarkKey === null) {
+            return $url.'?'.http_build_query($params);
         }
 
-        return $url.'?'.$query;
+        // Fixed separator: the signature must cover the parameters the proxy reads.
+        $query = http_build_query($params, '', '&');
+
+        // Lower case: the proxy signs the file's canonical UUID.
+        return $url.'?'.$query.'&wms='.WatermarkSignature::sign(
+            $this->watermarkKey,
+            strtolower($this->id),
+            WatermarkSignature::parseQuery($query),
+        );
     }
 
     /**
