@@ -155,6 +155,29 @@ class AssetMutations extends BaseMutation
         return new UploadLink($result['replaceFairuFile'] ?? []);
     }
 
+    /**
+     * Set the visible watermark of many assets at once: true on, false off,
+     * null inherits from the folder or workspace.
+     *
+     * The API refuses the whole selection if any asset may not be updated, and
+     * accepts at most 2000 ids. Requires the visible watermark add-on.
+     *
+     * @param  array<int, string>  $ids
+     * @return int the number of assets updated
+     */
+    public function setWatermark(array $ids, ?bool $value): int
+    {
+        $mutation = <<<'GRAPHQL'
+        mutation SetFairuWatermark($ids: [ID!]!, $value: Boolean) {
+            setFairuWatermark(ids: $ids, value: $value)
+        }
+        GRAPHQL;
+
+        $result = $this->executeMutation($mutation, ['ids' => $ids, 'value' => $value]);
+
+        return (int) ($result['setFairuWatermark'] ?? 0);
+    }
+
     public function createAccessSignatures(array $ids, ?int $validForMinutes = null): array
     {
         $mutation = <<<'GRAPHQL'

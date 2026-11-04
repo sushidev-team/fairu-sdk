@@ -157,6 +157,13 @@ $asset = Fairu::assetMutations()->update(
         ->copyrightIds(['copyright-uuid'])
 );
 
+// Visible watermark: true on, false off, null inherits, uncalled leaves it alone
+Fairu::assetMutations()->update(FileDTO::make()->id('asset-uuid')->watermark(true));
+Fairu::folderMutations()->update(FolderDTO::make()->id('folder-uuid')->watermark(null));
+
+// Set it for many assets at once (at most 2000); returns the number updated
+$count = Fairu::assetMutations()->setWatermark(['asset-uuid-1', 'asset-uuid-2'], false);
+
 // Delete asset
 Fairu::assetMutations()->delete('asset-uuid');
 
