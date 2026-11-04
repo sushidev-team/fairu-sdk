@@ -157,6 +157,13 @@ $asset = Fairu::assetMutations()->update(
         ->copyrightIds(['copyright-uuid'])
 );
 
+// Visible watermark: true on, false off, null inherits, uncalled leaves it alone
+Fairu::assetMutations()->update(FileDTO::make()->id('asset-uuid')->watermark(true));
+Fairu::folderMutations()->update(FolderDTO::make()->id('folder-uuid')->watermark(null));
+
+// Set it for many assets at once (at most 2000); returns the number updated
+$count = Fairu::assetMutations()->setWatermark(['asset-uuid-1', 'asset-uuid-2'], false);
+
 // Delete asset
 Fairu::assetMutations()->delete('asset-uuid');
 
@@ -628,6 +635,27 @@ $url = Fairu::fileProxy()
     ->toUrl();
 ```
 
+### Skipping the visible watermark
+
+If the tenant uses the visible watermark (logo overlay), server-rendered URLs can
+skip it with `withoutWatermark()`. Pass the tenant's watermark key (`fwm_...`,
+shown in the Fairu tenant settings). The SDK appends `wm=0` and a signature
+(`wms`) over the final query when the URL is built, so call order does not
+matter. Removing `wm=0`/`wms` or changing any parameter of the URL brings the
+watermark back.
+
+```php
+$url = Fairu::fileProxy()
+    ->url('asset-uuid', 'hero.jpg')
+    ->width(1600)
+    ->withoutWatermark(config('services.fairu.watermark_key'))
+    ->toUrl();
+// https://files.fairu.app/asset-uuid/hero.jpg?width=1600&wm=0&wms=...
+```
+
+Keep the key server-side; never build these URLs in the browser. An invalid
+key throws an `InvalidArgumentException`.
+
 ### Utility Methods
 
 ```php
@@ -652,6 +680,7 @@ $healthy = Fairu::fileProxy()->health();
 | `format` | jpg, png, webp | Output format (default: webp) |
 | `fit` | cover, contain | Resize mode (default: cover) |
 | `focal` | x-y-zoom | Smart crop focal point |
+| `wm` / `wms` | `0` + signature | Skip the visible watermark (set via `withoutWatermark()`) |
 
 ## Testing
 

@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace SushiDev\Fairu\DTOs;
 
+use SushiDev\Fairu\DTOs\Concerns\HasWatermark;
+
 class FileDTO extends BaseDTO
 {
+    use HasWatermark;
+
     public function id(string $id): self
     {
         $this->data['id'] = $id;
