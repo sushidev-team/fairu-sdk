@@ -256,7 +256,7 @@ class FileProxyBuilder
             return $url;
         }
 
-        $query = http_build_query($params);
+        $query = http_build_query($params, '', '&');
 
         if ($this->watermarkKey !== null) {
             $query .= '&wms='.WatermarkSignature::sign(

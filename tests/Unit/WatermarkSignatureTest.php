@@ -106,6 +106,23 @@ describe('FileProxyBuilder::withoutWatermark', function () {
         expect($url)->toBe("https://files.fairu.app/{$vectors['file_id']}/image.jpg?width=1600&wm=0&wms=O70ZFBx6ylPOX70Y6Wwjk5");
     });
 
+    it('separates parameters with & regardless of arg_separator.output', function () {
+        $vectors = watermarkVectors();
+        $previous = ini_set('arg_separator.output', ';');
+
+        try {
+            $url = FileProxyBuilder::make('https://files.fairu.app', $vectors['file_id'], 'image.jpg')
+                ->param('wm', '1')
+                ->width(1600)
+                ->withoutWatermark(watermarkVectorKey(1))
+                ->toUrl();
+        } finally {
+            ini_set('arg_separator.output', $previous);
+        }
+
+        expect($url)->toBe("https://files.fairu.app/{$vectors['file_id']}/image.jpg?width=1600&wm=0&wms=O70ZFBx6ylPOX70Y6Wwjk5");
+    });
+
     it('does not sign without withoutWatermark', function () {
         $url = FileProxyBuilder::make('https://files.fairu.app', 'abc-123', 'image.jpg')->width(800)->toUrl();
 
