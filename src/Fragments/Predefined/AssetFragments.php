@@ -96,7 +96,7 @@ class AssetFragments
             ]));
     }
 
-    public static function withUrls(int $width = null, int $height = null, int $quality = null): FragmentBuilder
+    public static function withUrls(?int $width = null, ?int $height = null, ?int $quality = null): FragmentBuilder
     {
         $builder = FragmentBuilder::for('FairuAsset')
             ->name('AssetWithUrls')

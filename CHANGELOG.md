@@ -1,10 +1,17 @@
 # Changelog
 
-## Unreleased
+## [1.3.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.2.0...v1.3.0) (2026-08-07)
+
 
 ### Features
 
-* **file-proxy:** `FileProxyBuilder::withoutWatermark(string $displayKey)` signs URLs with `wm=0&wms=…` to skip the tenant's visible watermark
+* **deps:** support Laravel 13 ([fdbb15b](https://github.com/sushidev-team/fairu-sdk/commit/fdbb15b03c86e21fce4ef5b96352a93fb736b97b))
+* **deps:** support Laravel 13 ([1dcbda9](https://github.com/sushidev-team/fairu-sdk/commit/1dcbda9c856b79f6ed5249b1f0ab4de48b597c76))
+
+
+### Bug Fixes
+
+* **ci:** drop the Laravel 10 and 11 matrix legs ([2474f39](https://github.com/sushidev-team/fairu-sdk/commit/2474f39b74db36d759272bae5dd84799e5b7bf19))
 
 ## [1.2.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.1.3...v1.2.0) (2026-04-11)
 
