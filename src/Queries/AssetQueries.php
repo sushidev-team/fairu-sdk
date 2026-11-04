@@ -60,6 +60,30 @@ class AssetQueries extends BaseQuery
         return new Asset($result['fairuFileByPath']);
     }
 
+    /**
+     * Find an existing asset by its SHA1 content fingerprint (pre-upload
+     * deduplication). Returns the oldest matching asset in the tenant, or null.
+     */
+    public function findByFingerprint(string $fingerprint, ?FragmentInterface $fragment = null): ?Asset
+    {
+        $selection = $this->getFragment($fragment);
+
+        $query = <<<GRAPHQL
+        query FairuFileByFingerprint(\$fingerprint: String!) {
+            fairuFileByFingerprint(fingerprint: \$fingerprint) {$selection}
+        }
+        GRAPHQL;
+
+        $cacheKey = $this->cacheManager?->generateKey('asset_fingerprint', ['fingerprint' => $fingerprint]);
+        $result = $this->executeQuery($query, ['fingerprint' => $fingerprint], $cacheKey);
+
+        if (! isset($result['fairuFileByFingerprint'])) {
+            return null;
+        }
+
+        return new Asset($result['fairuFileByFingerprint']);
+    }
+
     public function findMany(array $ids, ?FragmentInterface $fragment = null): array
     {
         $selection = $this->getFragment($fragment);
