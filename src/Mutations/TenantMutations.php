@@ -9,6 +9,27 @@ use SushiDev\Fairu\Responses\TenantCreationResult;
 
 class TenantMutations extends BaseMutation
 {
+    /**
+     * Permanently delete a direct sub-tenant using the parent's API key.
+     *
+     * Requires tenant::delete on the parent. Archived files are included;
+     * stored objects are removed by Fairu's cleanup queue without a grace period.
+     * A missing or already deleted tenant raises GraphQLException with
+     * extensions.code 404 in getFirstError().
+     */
+    public function deleteSubTenant(string $id): bool
+    {
+        $mutation = <<<'GRAPHQL'
+        mutation DeleteFairuSubTenant($id: ID!) {
+            deleteFairuSubTenant(id: $id)
+        }
+        GRAPHQL;
+
+        $result = $this->executeMutation($mutation, ['id' => $id]);
+
+        return $result['deleteFairuSubTenant'] ?? false;
+    }
+
     public function create(string $name): TenantCreationResult
     {
         $mutation = <<<'GRAPHQL'
