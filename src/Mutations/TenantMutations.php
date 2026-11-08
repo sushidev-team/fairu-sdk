@@ -14,7 +14,9 @@ class TenantMutations extends BaseMutation
      *
      * Requires tenant::delete on the parent. Archived files are included;
      * stored objects are removed by Fairu's cleanup queue without a grace period.
-     * A missing or already deleted tenant raises GraphQLException with
+     * True confirms a durable deletion request and immediate access revocation.
+     * Pending requests can be retried; Fairu resumes failed cleanup automatically.
+     * A missing or fully deleted tenant raises GraphQLException with
      * extensions.code 404 in getFirstError().
      */
     public function deleteSubTenant(string $id): bool
