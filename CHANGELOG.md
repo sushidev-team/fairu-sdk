@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.4.0...v1.5.0) (2026-11-26)
+
+
+### Features
+
+* add sub-tenant deletion mutation (FAIRU-55) ([b0c8dfe](https://github.com/sushidev-team/fairu-sdk/commit/b0c8dfe1a74f75184ca8cdb2930d80c767f43352))
+* add sub-tenant deletion mutation (FAIRU-55) ([a7f94cc](https://github.com/sushidev-team/fairu-sdk/commit/a7f94ccf893906927de4e15204cf23c53b773929))
+
 ## [1.4.0](https://github.com/sushidev-team/fairu-sdk/compare/v1.3.0...v1.4.0) (2026-11-04)
 
 
