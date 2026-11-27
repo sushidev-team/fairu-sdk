@@ -75,6 +75,7 @@ class AssetFragments
                 'has_error',
                 'size',
                 'versions',
+                'fingerprint',
                 'created_at',
                 'updated_at',
             ])
